@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: customerService
+          uri: lb://CUSTOMER
+          predicates:
+            - Path=/services/customers/**
+        - id: driverService
+          uri: lb://DRIVER
+          predicates:
+            - Path=/services/drivers/**
+        - id: vehicleService
+          uri: lb://VEHICLE
+          predicates:
+            - Path=/services/vehicles/**
+        - id: appointmentService
+          uri: lb://APPOINTMENT
+          predicates:
+            - Path=/services/appointments/**
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: ${spring.application.name}-${random.int}
+    hostname: localhost
