@@ -1,9 +1,6 @@
-package com.chanaka.project.commons.model;
+package com.chanaka.project.commons.model.customer;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "customers")
@@ -12,6 +9,7 @@ public class Customer {
     @Id
     @GeneratedValue
     int customerId;
+    String customerUsername;
     String customerFirstName;
     String customerLastName;
     String customerAddressStreet;
@@ -25,6 +23,14 @@ public class Customer {
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
+    }
+
+    public String getCustomerUsername() {
+        return customerUsername;
+    }
+
+    public void setCustomerUsername(String customerUsername) {
+        this.customerUsername = customerUsername;
     }
 
     public String getCustomerFirstName() {
