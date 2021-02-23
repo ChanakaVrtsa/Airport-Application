@@ -1,11 +1,12 @@
 package com.chanaka.project.driverservice.Controller;
 
-import com.chanaka.project.commons.model.Driver;
-import com.chanaka.project.commons.model.Vehicle;
+import com.chanaka.project.commons.model.driver.Driver;
+import com.chanaka.project.commons.model.vehicle.Vehicle;
 import com.chanaka.project.driverservice.Service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,14 +18,26 @@ public class DriverController {
     @Autowired
     DriverService driverService;
 
-    @PostMapping
+    @PostMapping(value = "/save")
     public Driver save(@RequestBody Driver driver) {
         return driverService.save(driver);
     }
 
+    @PreAuthorize("hasAuthority('Role_driver') or hasAuthority('Role_customer')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<Driver> fetch(@PathVariable int id) {
         Driver driver = driverService.getDriverById(id);
+        if(driver!=null) {
+            return ResponseEntity.ok().body(driver);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('Role_driver')")
+    @GetMapping(value = "/username/{username}")
+    public ResponseEntity<Driver> fetchUsername(@PathVariable String username) {
+        Driver driver = driverService.getDriverByUsername(username);
         if(driver!=null) {
             return ResponseEntity.ok().body(driver);
         } else {
@@ -42,7 +55,8 @@ public class DriverController {
         }
     }
 
-    @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('Role_driver')")
+    @PostMapping(value = "/{id}")
     public ResponseEntity<String> update(@PathVariable int id, @RequestBody Driver driver) {
 
         String update = driverService.updateDriverById(id, driver);

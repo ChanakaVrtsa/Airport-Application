@@ -1,7 +1,8 @@
 package com.chanaka.project.appointmentservice.Service;
 
 import com.chanaka.project.appointmentservice.Repository.AppointmentRepository;
-import com.chanaka.project.commons.model.Appointment;
+import com.chanaka.project.commons.model.appointment.Appointment;
+import com.chanaka.project.commons.model.customer.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,5 +67,39 @@ public class AppointmentServiceImpl implements AppointmentService{
         }
     }
 
+    @Override
+    public List<Appointment> getAllFreeAppointmentsByVehicleTypes(int id, boolean status, List<String> types) {
+        List<Appointment> appointments = appointmentRepository.findByDriverIdAndCancellationStatusAndVehicleTypeIn(id,status,types);
+        if(!appointments.isEmpty()) {
+            return appointments;
+        } else {
+            return null;
+        }
+    }
 
+    @Override
+    public String updateAppointmentByCancelStatus(int id, Appointment appointment) {
+
+        Appointment previousAppointment = getAppointmentById(id);
+        if(previousAppointment!=null) {
+            previousAppointment.setCancellationStatus(appointment.getCancellationStatus());
+            save(previousAppointment);
+            return "Updated Successfully";
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String updateAppointmentByDriverId(int id, Appointment appointment) {
+
+        Appointment previousAppointment = getAppointmentById(id);
+        if(previousAppointment!=null) {
+            previousAppointment.setDriverId(appointment.getDriverId());
+            save(previousAppointment);
+            return "Updated Successfully";
+        } else {
+            return null;
+        }
+    }
 }

@@ -1,4 +1,6 @@
-package com.chanaka.project.commons.model;
+package com.chanaka.project.commons.model.appointment;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,11 +18,16 @@ public class Appointment {
     int appointmentId;
     String pickupLocation;
     String dropOffLocation;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate appointmentDate;
+
+    @DateTimeFormat(pattern = "HH:mm")
     LocalTime appointmentTime;
     String vehicleType;
     int customerId;
     int driverId;
+    boolean cancellationStatus;
 
     public int getAppointmentId() {
         return appointmentId;
@@ -84,5 +91,13 @@ public class Appointment {
 
     public void setDriverId(int driverId) {
         this.driverId = driverId;
+    }
+
+    public boolean getCancellationStatus() {
+        return cancellationStatus;
+    }
+
+    public void setCancellationStatus(boolean cancellationStatus) {
+        this.cancellationStatus = cancellationStatus;
     }
 }

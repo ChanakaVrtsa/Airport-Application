@@ -1,4 +1,6 @@
-C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\Driver.java
+C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\auth\AuthCustomer.java
+C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\auth\AuthDriver.java
 C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\customer\Customer.java
-C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\Appointment.java
-C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\Vehicle.java
+C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\vehicle\Vehicle.java
+C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\appointment\Appointment.java
+C:\Users\Isuri\Desktop\Airport-Application\commons-model\src\main\java\com\chanaka\project\commons\model\driver\Driver.java

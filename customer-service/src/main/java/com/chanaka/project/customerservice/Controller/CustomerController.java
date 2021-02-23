@@ -12,17 +12,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/services/customers")
-@PreAuthorize("hasAuthority('Role_customer')")
+//@PreAuthorize("hasAuthority('Role_customer')")
 public class CustomerController {
 
     @Autowired
     CustomerService customerService;
 
-    @PostMapping
+    @PostMapping(value = "/save")
     public Customer save(@RequestBody Customer customer) {
         return customerService.save(customer);
     }
 
+    @PreAuthorize("hasAuthority('Role_customer') or hasAuthority('Role_driver')")
     @GetMapping(value = "/id/{id}")
     public ResponseEntity<Customer> fetch(@PathVariable int id) {
         Customer customer = customerService.getCustomerById(id);
@@ -33,6 +34,7 @@ public class CustomerController {
         }
     }
 
+    @PreAuthorize("hasAuthority('Role_customer')")
     @GetMapping(value = "/username/{username}")
     public ResponseEntity<Customer> fetchUsername(@PathVariable String username) {
         Customer customer = customerService.getCustomerByUsername(username);
@@ -53,7 +55,8 @@ public class CustomerController {
         }
     }
 
-    @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('Role_customer')")
+    @PostMapping(value = "/{id}")
     public ResponseEntity<String> update(@PathVariable int id, @RequestBody Customer customer) {
 
         String update = customerService.updateCustomerById(id,customer);

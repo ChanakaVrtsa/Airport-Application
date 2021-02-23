@@ -1,6 +1,6 @@
 package com.chanaka.project.vehicleservice.Service;
 
-import com.chanaka.project.commons.model.Vehicle;
+import com.chanaka.project.commons.model.vehicle.Vehicle;
 
 import java.util.List;
 
@@ -15,4 +15,6 @@ public interface VehicleService {
     List<Vehicle> getAllVehicles();
 
     List<Vehicle> getVehiclesByDriverId(int id);
+
+    List<String> getVehicleTypesByDriverId(int id);
 }

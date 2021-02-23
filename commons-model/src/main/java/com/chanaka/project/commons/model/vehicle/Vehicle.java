@@ -1,4 +1,4 @@
-package com.chanaka.project.commons.model;
+package com.chanaka.project.commons.model.vehicle;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

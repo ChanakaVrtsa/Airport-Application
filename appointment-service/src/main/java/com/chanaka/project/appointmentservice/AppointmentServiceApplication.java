@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @SpringBootApplication
 @EnableEurekaClient
 @EnableResourceServer
-@EntityScan(basePackages = "com.chanaka.project.commons.model")
+@EntityScan(basePackages = "com.chanaka.project.commons.model.appointment")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppointmentServiceApplication {
 

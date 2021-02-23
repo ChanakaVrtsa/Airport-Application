@@ -1,10 +1,11 @@
 package com.chanaka.project.vehicleservice.Service;
 
-import com.chanaka.project.commons.model.Vehicle;
+import com.chanaka.project.commons.model.vehicle.Vehicle;
 import com.chanaka.project.vehicleservice.Repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +48,19 @@ public class VehicleServiceImpl implements VehicleService {
             return null;
         }
 
+    }
+
+    @Override
+    public List<String> getVehicleTypesByDriverId(int id) {
+        List<Vehicle> vehicles = vehicleRepository.findByDriverId(id);
+        List<String> vehicleTypes = new ArrayList<>();
+        if(!vehicles.isEmpty()) {
+            for(Vehicle vehicle : vehicles) {
+                vehicleTypes.add(vehicle.getVehicleType());
+            }
+            return vehicleTypes;
+        } else {
+            return null;
+        }
     }
 }

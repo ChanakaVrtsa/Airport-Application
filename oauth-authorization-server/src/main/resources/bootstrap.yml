@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: authserver
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: ${spring.application.name}-${random.int}
+    hostname: localhost

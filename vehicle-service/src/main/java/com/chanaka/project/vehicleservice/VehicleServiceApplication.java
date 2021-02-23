@@ -7,7 +7,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EntityScan(basePackages = "com.chanaka.project.commons.model")
+@EntityScan(basePackages = "com.chanaka.project.commons.model.vehicle")
 public class VehicleServiceApplication {
 
 	public static void main(String[] args) {

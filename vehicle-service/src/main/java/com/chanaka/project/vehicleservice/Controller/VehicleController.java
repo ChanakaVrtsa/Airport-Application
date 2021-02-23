@@ -1,6 +1,6 @@
 package com.chanaka.project.vehicleservice.Controller;
 
-import com.chanaka.project.commons.model.Vehicle;
+import com.chanaka.project.commons.model.vehicle.Vehicle;
 import com.chanaka.project.vehicleservice.Service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -50,6 +50,17 @@ public class VehicleController {
     public ResponseEntity<List<Vehicle>> fetchAllByDriverId(@PathVariable int id) {
 
         List<Vehicle> vehicles = vehicleService.getVehiclesByDriverId(id);
+        if(vehicles!=null) {
+            return ResponseEntity.ok().body(vehicles);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping(value = "/driverVehicleTypes/{id}")
+    public ResponseEntity<List<String>> fetchVehicleTypesByDriverId(@PathVariable int id) {
+
+        List<String> vehicles = vehicleService.getVehicleTypesByDriverId(id);
         if(vehicles!=null) {
             return ResponseEntity.ok().body(vehicles);
         } else {

@@ -1,4 +1,4 @@
-package com.chanaka.project.commons.model;
+package com.chanaka.project.commons.model.driver;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +12,7 @@ public class Driver {
     @Id
     @GeneratedValue
     int driverId;
+    String driverUsername;
     String driverFirstName;
     String driverLastName;
     String driverNIC;
@@ -91,5 +92,13 @@ public class Driver {
 
     public void setDriverContactNo(String driverContactNo) {
         this.driverContactNo = driverContactNo;
+    }
+
+    public String getDriverUsername() {
+        return driverUsername;
+    }
+
+    public void setDriverUsername(String driverUsername) {
+        this.driverUsername = driverUsername;
     }
 }
