@@ -9,6 +9,7 @@ public class Customer {
     @Id
     @GeneratedValue
     int customerId;
+    @Column(unique = true)
     String customerUsername;
     String customerFirstName;
     String customerLastName;

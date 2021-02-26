@@ -52,7 +52,7 @@ public class AppointmentController {
         if(appointments!=null) {
             return ResponseEntity.ok().body(appointments);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
@@ -62,7 +62,7 @@ public class AppointmentController {
         if(appointments!=null) {
             return ResponseEntity.ok().body(appointments);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
@@ -88,7 +88,7 @@ public class AppointmentController {
         if(appointments!=null) {
             return ResponseEntity.ok().body(appointments);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 

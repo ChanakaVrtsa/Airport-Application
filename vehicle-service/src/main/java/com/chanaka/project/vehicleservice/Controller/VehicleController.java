@@ -53,7 +53,7 @@ public class VehicleController {
         if(vehicles!=null) {
             return ResponseEntity.ok().body(vehicles);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
