@@ -9,6 +9,8 @@ public interface AppointmentService {
 
     Appointment save(Appointment appointment);
 
+    String saveWithPayment(Appointment appointment, String token);
+
     String deleteAppointmentById(int id);
 
     List<Appointment> getAllAppointments();
@@ -25,6 +27,8 @@ public interface AppointmentService {
 
     String updateAppointmentByCancelStatus(int id, Appointment appointment);
 
-    String updateAppointmentByDriverId(int id, Appointment appointment);
+    String updateAppointmentByDriverId(int id, Appointment appointment, String token);
+
+    String updateAppointmentHasPaidStatus(int id, Appointment appointment, String token);
 
 }

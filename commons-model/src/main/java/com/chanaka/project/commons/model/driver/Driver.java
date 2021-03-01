@@ -1,9 +1,6 @@
 package com.chanaka.project.commons.model.driver;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "drivers")
@@ -12,6 +9,7 @@ public class Driver {
     @Id
     @GeneratedValue
     int driverId;
+    @Column(unique = true)
     String driverUsername;
     String driverFirstName;
     String driverLastName;

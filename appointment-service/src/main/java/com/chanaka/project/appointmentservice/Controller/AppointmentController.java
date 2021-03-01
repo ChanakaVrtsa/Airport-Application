@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "services/appointments")
@@ -24,6 +25,12 @@ public class AppointmentController {
     @PostMapping
     public Appointment save(@RequestBody Appointment appointment) {
         return appointmentService.save(appointment);
+    }
+
+    @PostMapping(value = "/saveAppointmentWithPayment")
+    public String saveAppointmentWithPayment(@RequestBody Appointment appointment, @RequestHeader Map<String,String> headers) {
+        String oauthToken = headers.get("authorization");
+        return appointmentService.saveWithPayment(appointment, oauthToken);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -104,9 +111,22 @@ public class AppointmentController {
     }
 
     @PostMapping(value = "/updateDriver/{id}")
-    public ResponseEntity<String> updateDriverId(@PathVariable int id, @RequestBody Appointment appointment) {
+    public ResponseEntity<String> updateDriverId(@PathVariable int id, @RequestBody Appointment appointment,  @RequestHeader Map<String,String> headers) {
 
-        String update = appointmentService.updateAppointmentByDriverId(id,appointment);
+        String oauthToken = headers.get("authorization");
+        String update = appointmentService.updateAppointmentByDriverId(id,appointment,oauthToken);
+        if(update!=null) {
+            return ResponseEntity.ok().body(update);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping(value = "/updateHasPaid/{id}")
+    public ResponseEntity<String> updateHasPaidStatus(@PathVariable int id, @RequestBody Appointment appointment,  @RequestHeader Map<String,String> headers) {
+
+        String oauthToken = headers.get("authorization");
+        String update = appointmentService.updateAppointmentHasPaidStatus(id,appointment,oauthToken);
         if(update!=null) {
             return ResponseEntity.ok().body(update);
         } else {

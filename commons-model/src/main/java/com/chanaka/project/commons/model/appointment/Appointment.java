@@ -28,6 +28,7 @@ public class Appointment {
     int customerId;
     int driverId;
     boolean cancellationStatus;
+    boolean hasPaid;
 
     public int getAppointmentId() {
         return appointmentId;
@@ -99,5 +100,13 @@ public class Appointment {
 
     public void setCancellationStatus(boolean cancellationStatus) {
         this.cancellationStatus = cancellationStatus;
+    }
+
+    public boolean getHasPaid() {
+        return hasPaid;
+    }
+
+    public void setHasPaid(boolean hasPaid) {
+        this.hasPaid = hasPaid;
     }
 }

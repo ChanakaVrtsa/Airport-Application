@@ -1,6 +1,7 @@
-com\chanaka\project\commons\model\appointment\Appointment.class
 com\chanaka\project\commons\model\auth\AuthCustomer.class
 com\chanaka\project\commons\model\driver\Driver.class
-com\chanaka\project\commons\model\customer\Customer.class
 com\chanaka\project\commons\model\vehicle\Vehicle.class
 com\chanaka\project\commons\model\auth\AuthDriver.class
+com\chanaka\project\commons\model\appointment\Appointment.class
+com\chanaka\project\commons\model\payment\Payment.class
+com\chanaka\project\commons\model\customer\Customer.class
