@@ -23,7 +23,7 @@ public class DriverController {
         return driverService.save(driver);
     }
 
-    @PreAuthorize("hasAuthority('Role_driver') or hasAuthority('Role_customer')")
+    @PreAuthorize("hasAuthority('Role_driver') or hasAuthority('Role_customer') or hasAuthority('Role_admin')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<Driver> fetch(@PathVariable int id) {
         Driver driver = driverService.getDriverById(id);
@@ -34,7 +34,7 @@ public class DriverController {
         }
     }
 
-    @PreAuthorize("hasAuthority('Role_driver')")
+    @PreAuthorize("hasAuthority('Role_driver') or hasAuthority('Role_admin')")
     @GetMapping(value = "/username/{username}")
     public ResponseEntity<Driver> fetchUsername(@PathVariable String username) {
         Driver driver = driverService.getDriverByUsername(username);
@@ -67,6 +67,7 @@ public class DriverController {
         }
     }
 
+    @PreAuthorize("hasAuthority('Role_admin')")
     @GetMapping
     public List<Driver> fetchAll() {
 

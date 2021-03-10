@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "services/appointments")
-@PreAuthorize("hasAuthority('Role_customer') or hasAuthority('Role_driver')")
+@PreAuthorize("hasAuthority('Role_customer') or hasAuthority('Role_driver') or hasAuthority('Role_admin')")
 public class AppointmentController {
 
     @Autowired

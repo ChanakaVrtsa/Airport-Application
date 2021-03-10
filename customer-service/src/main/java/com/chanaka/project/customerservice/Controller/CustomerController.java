@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/services/customers")
-//@PreAuthorize("hasAuthority('Role_customer')")
+//@PreAuthorize("hasAuthority('Role_admin')")
 public class CustomerController {
 
     @Autowired
@@ -23,7 +23,7 @@ public class CustomerController {
         return customerService.save(customer);
     }
 
-    @PreAuthorize("hasAuthority('Role_customer') or hasAuthority('Role_driver')")
+    @PreAuthorize("hasAuthority('Role_customer') or hasAuthority('Role_driver') or hasAuthority('Role_admin')")
     @GetMapping(value = "/id/{id}")
     public ResponseEntity<Customer> fetch(@PathVariable int id) {
         Customer customer = customerService.getCustomerById(id);
@@ -34,7 +34,7 @@ public class CustomerController {
         }
     }
 
-    @PreAuthorize("hasAuthority('Role_customer')")
+    @PreAuthorize("hasAuthority('Role_customer') or hasAuthority('Role_admin')")
     @GetMapping(value = "/username/{username}")
     public ResponseEntity<Customer> fetchUsername(@PathVariable String username) {
         Customer customer = customerService.getCustomerByUsername(username);
@@ -67,6 +67,7 @@ public class CustomerController {
         }
     }
 
+    @PreAuthorize("hasAuthority('Role_admin')")
     @GetMapping
     public List<Customer> fetchAll() {
         return customerService.getAllCustomers();

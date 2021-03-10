@@ -48,7 +48,7 @@ public class PaymentController {
         }
     }
 
-    @PreAuthorize("hasAuthority('Role_customer')")
+    @PreAuthorize("hasAuthority('Role_customer') or hasAuthority('Role_admin')")
     @GetMapping(value = "/customer/{id}")
     public ResponseEntity<List<Payment>> fetchByCustomerId(@PathVariable int id) {
         List<Payment> payments = paymentService.getPaymentsByCustomerId(id);
@@ -59,7 +59,7 @@ public class PaymentController {
         }
     }
 
-    @PreAuthorize("hasAuthority('Role_driver')")
+    @PreAuthorize("hasAuthority('Role_driver') or hasAuthority('Role_admin')")
     @GetMapping(value = "/driver/{id}")
     public ResponseEntity<List<Payment>> fetchByDriverId(@PathVariable int id) {
         List<Payment> payments = paymentService.getPaymentsByDriverId(id);
