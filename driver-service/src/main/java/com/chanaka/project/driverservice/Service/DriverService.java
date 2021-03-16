@@ -1,6 +1,7 @@
 package com.chanaka.project.driverservice.Service;
 
 import com.chanaka.project.commons.model.driver.Driver;
+import com.chanaka.project.commons.model.responseModels.DriverWithAppointments;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,5 +18,7 @@ public interface DriverService {
     String updateDriverById(int id, Driver driver);
 
     List<Driver> getAllDrivers();
+
+    DriverWithAppointments getDriverWithAppointments(String username);
 
 }

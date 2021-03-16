@@ -1,6 +1,8 @@
 package com.chanaka.project.customerservice.Controller;
 
+import com.chanaka.project.commons.model.appointment.Appointment;
 import com.chanaka.project.commons.model.customer.Customer;
+import com.chanaka.project.commons.model.responseModels.CustomerWithAppointments;
 import com.chanaka.project.customerservice.Service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -40,6 +42,17 @@ public class CustomerController {
         Customer customer = customerService.getCustomerByUsername(username);
         if(customer!=null) {
             return ResponseEntity.ok().body(customer);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('Role_customer') or hasAuthority('Role_admin')")
+    @GetMapping(value = "/usernameWithAppointments/{username}")
+    public ResponseEntity<CustomerWithAppointments> fetchCustomerWithAppointments(@PathVariable String username) {
+        CustomerWithAppointments customerWithAppointments = customerService.getCustomerWithAppointments(username);
+        if(customerWithAppointments!=null) {
+            return ResponseEntity.ok().body(customerWithAppointments);
         } else {
             return ResponseEntity.notFound().build();
         }

@@ -1,6 +1,9 @@
 package com.chanaka.project.customerservice.Service;
 
+import com.chanaka.project.commons.model.appointment.Appointment;
 import com.chanaka.project.commons.model.customer.Customer;
+import com.chanaka.project.commons.model.responseModels.CustomerWithAppointments;
+
 
 import java.util.List;
 
@@ -17,5 +20,7 @@ public interface CustomerService {
     String updateCustomerById(int id, Customer customer);
 
     List<Customer> getAllCustomers();
+
+    CustomerWithAppointments getCustomerWithAppointments(String username);
 
 }

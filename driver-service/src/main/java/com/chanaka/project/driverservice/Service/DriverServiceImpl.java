@@ -1,16 +1,33 @@
 package com.chanaka.project.driverservice.Service;
 
-import com.chanaka.project.commons.model.customer.Customer;
+import com.chanaka.project.commons.model.appointment.Appointment;
 import com.chanaka.project.commons.model.driver.Driver;
+import com.chanaka.project.commons.model.responseModels.DriverWithAppointments;
+import com.chanaka.project.driverservice.Config.AccessToken;
+import com.chanaka.project.driverservice.Hystrix.AppointmentsCommand;
 import com.chanaka.project.driverservice.Repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService{
+
+
+    @LoadBalanced
+    @Bean
+    RestTemplate getRestTemplate(RestTemplateBuilder builder) {
+        return builder.build();
+    }
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @Autowired
     DriverRepository driverRepository;
@@ -32,6 +49,16 @@ public class DriverServiceImpl implements DriverService{
         return driver.orElse(null);
     }
 
+    @Override
+    public DriverWithAppointments getDriverWithAppointments(String username) {
+        Driver driver = getDriverByUsername(username);
+        if(driver!=null) {
+            Appointment[] appointments = getAppointments(driver.getDriverId());
+            return new DriverWithAppointments(driver,appointments);
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public String deleteDriverById(int id) {
@@ -61,5 +88,11 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public List<Driver> getAllDrivers() {
         return driverRepository.findAll();
+    }
+
+    private Appointment[] getAppointments(int driverId) {
+
+        AppointmentsCommand appointmentsCommand = new AppointmentsCommand(restTemplate,driverId,AccessToken.getAccessToken());
+        return appointmentsCommand.execute();
     }
 }

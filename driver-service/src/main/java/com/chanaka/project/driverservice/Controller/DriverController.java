@@ -1,6 +1,7 @@
 package com.chanaka.project.driverservice.Controller;
 
 import com.chanaka.project.commons.model.driver.Driver;
+import com.chanaka.project.commons.model.responseModels.DriverWithAppointments;
 import com.chanaka.project.commons.model.vehicle.Vehicle;
 import com.chanaka.project.driverservice.Service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,17 @@ public class DriverController {
         Driver driver = driverService.getDriverByUsername(username);
         if(driver!=null) {
             return ResponseEntity.ok().body(driver);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('Role_driver') or hasAuthority('Role_admin')")
+    @GetMapping(value = "/usernameWithAppointments/{username}")
+    public ResponseEntity<DriverWithAppointments> fetchCustomerWithAppointments(@PathVariable String username) {
+        DriverWithAppointments driverWithAppointments = driverService.getDriverWithAppointments(username);
+        if(driverWithAppointments!=null) {
+            return ResponseEntity.ok().body(driverWithAppointments);
         } else {
             return ResponseEntity.notFound().build();
         }
