@@ -108,7 +108,7 @@ public class DriverServiceImpl implements DriverService{
             return restTemplate.exchange("http://appointment/services/appointments/driver/"+driverId, HttpMethod.GET, appointmentHttpEntity, Appointment[].class).getBody();
         },()->{
             System.out.println("Appointments Fallback Executed");
-            return null;
+            return new Appointment[0];
         });
 
         Future<Appointment[]> appointmentListFuture=appointmentCommonHystrixCommand.queue();
@@ -122,11 +122,10 @@ public class DriverServiceImpl implements DriverService{
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Authorization", token);
             HttpEntity<Vehicle> vehicleHttpEntity = new HttpEntity<>(httpHeaders);
-            System.out.println("Vehicles Executed");
             return restTemplate.exchange("http://vehicle/services/vehicles/driver/"+driverId, HttpMethod.GET, vehicleHttpEntity, Vehicle[].class).getBody();
         },()->{
             System.out.println("Vehicles Fallback Executed");
-            return null;
+            return new Vehicle[0];
         });
 
         Future<Vehicle[]> vehicleListFuture=vehicleCommonHystrixCommand.queue();
