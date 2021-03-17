@@ -1,7 +1,7 @@
 package com.chanaka.project.driverservice.Controller;
 
 import com.chanaka.project.commons.model.driver.Driver;
-import com.chanaka.project.commons.model.responseModels.DriverWithAppointments;
+import com.chanaka.project.commons.model.responseModels.DriverWithAppointmentsAndVehicles;
 import com.chanaka.project.commons.model.vehicle.Vehicle;
 import com.chanaka.project.driverservice.Service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping(value = "/services/drivers")
@@ -48,10 +49,10 @@ public class DriverController {
 
     @PreAuthorize("hasAuthority('Role_driver') or hasAuthority('Role_admin')")
     @GetMapping(value = "/usernameWithAppointments/{username}")
-    public ResponseEntity<DriverWithAppointments> fetchCustomerWithAppointments(@PathVariable String username) {
-        DriverWithAppointments driverWithAppointments = driverService.getDriverWithAppointments(username);
-        if(driverWithAppointments!=null) {
-            return ResponseEntity.ok().body(driverWithAppointments);
+    public ResponseEntity<DriverWithAppointmentsAndVehicles> fetchDriverWithAppointmentsAndVehicles(@PathVariable String username) throws ExecutionException, InterruptedException {
+        DriverWithAppointmentsAndVehicles driverWithAppointmentsAndVehicles = driverService.getDriverWithAppointmentsAndVehicles(username);
+        if(driverWithAppointmentsAndVehicles!=null) {
+            return ResponseEntity.ok().body(driverWithAppointmentsAndVehicles);
         } else {
             return ResponseEntity.notFound().build();
         }

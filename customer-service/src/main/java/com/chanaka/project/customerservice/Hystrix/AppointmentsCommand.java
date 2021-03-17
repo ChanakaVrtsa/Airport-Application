@@ -36,7 +36,7 @@ public class AppointmentsCommand extends HystrixCommand<Appointment[]> {
     @Override
     protected Appointment[] getFallback() {
         System.out.println("Fallback Executed");
-        return null;
+        return new Appointment[0];
     }
 
 }

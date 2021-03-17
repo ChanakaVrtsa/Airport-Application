@@ -2,19 +2,25 @@ package com.chanaka.project.driverservice.Service;
 
 import com.chanaka.project.commons.model.appointment.Appointment;
 import com.chanaka.project.commons.model.driver.Driver;
-import com.chanaka.project.commons.model.responseModels.DriverWithAppointments;
+import com.chanaka.project.commons.model.responseModels.DriverWithAppointmentsAndVehicles;
+import com.chanaka.project.commons.model.vehicle.Vehicle;
 import com.chanaka.project.driverservice.Config.AccessToken;
-import com.chanaka.project.driverservice.Hystrix.AppointmentsCommand;
+import com.chanaka.project.driverservice.Hystrix.CommonHystrixCommand;
 import com.chanaka.project.driverservice.Repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 public class DriverServiceImpl implements DriverService{
@@ -50,11 +56,13 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public DriverWithAppointments getDriverWithAppointments(String username) {
+    public DriverWithAppointmentsAndVehicles getDriverWithAppointmentsAndVehicles(String username) throws ExecutionException, InterruptedException {
+        String token = AccessToken.getAccessToken();
         Driver driver = getDriverByUsername(username);
         if(driver!=null) {
-            Appointment[] appointments = getAppointments(driver.getDriverId());
-            return new DriverWithAppointments(driver,appointments);
+            Appointment[] appointments = getAppointments(driver.getDriverId(), token);
+            Vehicle[] vehicles = getVehicles(driver.getDriverId(), token);
+            return new DriverWithAppointmentsAndVehicles(driver,appointments,vehicles);
         } else {
             return null;
         }
@@ -90,9 +98,38 @@ public class DriverServiceImpl implements DriverService{
         return driverRepository.findAll();
     }
 
-    private Appointment[] getAppointments(int driverId) {
+    private Appointment[] getAppointments(int driverId, String token) throws ExecutionException, InterruptedException {
 
-        AppointmentsCommand appointmentsCommand = new AppointmentsCommand(restTemplate,driverId,AccessToken.getAccessToken());
-        return appointmentsCommand.execute();
+        CommonHystrixCommand<Appointment[]> appointmentCommonHystrixCommand = new CommonHystrixCommand<Appointment[]>("default",()->
+        {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("Authorization", token);
+            HttpEntity<Appointment> appointmentHttpEntity = new HttpEntity<>(httpHeaders);
+            return restTemplate.exchange("http://appointment/services/appointments/driver/"+driverId, HttpMethod.GET, appointmentHttpEntity, Appointment[].class).getBody();
+        },()->{
+            System.out.println("Appointments Fallback Executed");
+            return null;
+        });
+
+        Future<Appointment[]> appointmentListFuture=appointmentCommonHystrixCommand.queue();
+        return appointmentListFuture.get();
+    }
+
+    private Vehicle[] getVehicles(int driverId, String token) throws ExecutionException, InterruptedException {
+
+        CommonHystrixCommand<Vehicle[]> vehicleCommonHystrixCommand = new CommonHystrixCommand<Vehicle[]>("default",()->
+        {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("Authorization", token);
+            HttpEntity<Vehicle> vehicleHttpEntity = new HttpEntity<>(httpHeaders);
+            System.out.println("Vehicles Executed");
+            return restTemplate.exchange("http://vehicle/services/vehicles/driver/"+driverId, HttpMethod.GET, vehicleHttpEntity, Vehicle[].class).getBody();
+        },()->{
+            System.out.println("Vehicles Fallback Executed");
+            return null;
+        });
+
+        Future<Vehicle[]> vehicleListFuture=vehicleCommonHystrixCommand.queue();
+        return vehicleListFuture.get();
     }
 }
