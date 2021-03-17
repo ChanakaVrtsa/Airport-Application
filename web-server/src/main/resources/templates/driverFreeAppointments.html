@@ -1,0 +1,47 @@
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Free Appointments</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<header th:insert="header.html"></header>
+
+<div class="container-fluid" style="margin-top:50px" >
+    <div class="container" th:unless="${freeAppointmentsList != null}">
+        <p><i>No Appointments To Show. Please Add An Vehicle. If Already Added Service Might Be Unavailable. Try Again Later</i></p>
+    </div>
+    <div class="container-fluid" th:unless="${freeAppointmentsList == null}">
+        <th:block th:with="partitions=${T(org.apache.commons.collections4.ListUtils).partition(freeAppointmentsList, 4)}">
+            <div class="row" th:each="partition: ${partitions}">
+                <div class="col-sm-3" th:each="appointment: ${partition}">
+                    <div class="card cardAppointment shadow-sm p-3 mb-5 bg-white rounded">
+                        <h5 class="card-header">Date: <span th:text="${appointment.appointmentDate}"></span></h5>
+                        <div class="card-body">
+                            <h6 class="card-title">DETAILS</h6>
+                            <p class="card-text">PickUp: <span th:text="${appointment.pickupLocation}"></span></p>
+                            <p class="card-text">DropOff: <span th:text="${appointment.dropOffLocation}"></span></p>
+                            <p class="card-text">Time: <span th:text="${appointment.appointmentTime}"></span></p>
+                            <p class="card-text">Vehicle: <span th:text="${appointment.vehicleType}"></span></p>
+                            <p class="card-text">Status: <span th:if="${appointment.cancellationStatus==true}">Cancelled</span>
+                                <span th:unless="${appointment.cancellationStatus==true}"> <span th:text="${appointment.driverId==0} ? 'Pending' : 'Accepted'"></span></span></p>
+                            <p class="card-text">Payments: <span th:text="${appointment.hasPaid==false} ? 'Not Paid' : 'Paid'"></span></p>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <form method="post" th:action="@{/acceptAppointment/{id}(id=${appointment.appointmentId})}">
+                                    <button type="submit" class="btn btn-primary">Accept Appointment</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+</body>
+</html>

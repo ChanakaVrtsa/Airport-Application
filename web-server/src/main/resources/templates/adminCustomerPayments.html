@@ -1,0 +1,39 @@
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Customer Payments</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<header th:insert="header.html"></header>
+
+<div class="container" style="margin-top:50px" th:unless="${customerPaymentsList != null}">
+    <p><i>No Payment Entries To Show.</i></p>
+</div>
+<div class="container card shadow p-3 mb-5 bg-white rounded" style="margin-top:50px" th:unless="${customerPaymentsList == null}">
+    <table class="table">
+        <thead>
+        <tr>
+            <td><b>PAYMENT ID</b></td>
+            <td><b>APPOINTMENT ID</b></td>
+            <td><b>APPOINTMENT PICKUP</b></td>
+            <td><b>APPOINTMENT DROPOFF</b></td>
+            <td><b>PAYMENT STATUS</b></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="payment: ${customerPaymentsList}">
+            <td><span th:text="${payment.paymentId}"></span></td>
+            <td><span th:text="${payment.appointmentId}"></span></td>
+            <td><span th:text="${payment.appointmentPickup}"></span></td>
+            <td><span th:text="${payment.appointmentDropOff}"></span></td>
+            <td><span th:text="${payment.hasPaid==false} ? 'NOT PAID' : 'PAID'"></span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

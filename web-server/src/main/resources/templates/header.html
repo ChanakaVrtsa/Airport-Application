@@ -1,0 +1,63 @@
+<html xmlns:th="http:/www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<header>
+<style>
+    .navbar {
+  margin-bottom: 0;
+  background-color: #000365;
+  z-index: 9999;
+  border: 0;
+  font-size: 12px !important;
+  line-height: 1.42857143 !important;
+  letter-spacing: 4px;
+  border-radius: 0;
+}
+
+.navbar li a, .navbar .navbar-brand {
+  color: #fff !important;
+}
+
+.navbar-nav li a:hover, .navbar-nav li.active a {
+  color: #000365 !important;
+  background-color: #fff !important;
+}
+
+.dropdown-menu {
+background-color: #000365;
+}
+
+</style>
+</header>
+<body>
+
+<nav class="navbar navbar-expand-md">
+    <a class="navbar-brand" href="#">Travel Mate</a>
+    <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav  ml-auto">
+            <li class="nav-item" sec:authorize="isAnonymous()">
+                <a class="nav-link" href="/signin">LOGIN</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" href="javascript: document.logoutForm.submit()">LOG OUT</a>
+                <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                    <input hidden type="submit" value="Sign Out" />
+                </form>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    REGISTER
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/registerCustomer">Customer</a>
+                    <a class="dropdown-item" href="/registerDriver">Driver</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+</body>
+</html>

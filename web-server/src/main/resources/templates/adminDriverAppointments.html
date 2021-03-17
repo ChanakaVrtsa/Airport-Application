@@ -1,0 +1,56 @@
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Driver Appointments</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+</head>
+<body>
+<header th:insert="header.html"></header>
+
+<div class="container" style="margin-top:50px" th:unless="${driverAppointmentsList != null}">
+    <p><i>No Appointments Entries To Show.</i></p>
+</div>
+<div class="container card shadow p-3 mb-5 bg-white rounded" style="margin-top:50px" th:unless="${driverAppointmentsList == null}">
+    <table class="table">
+        <thead>
+        <tr>
+            <td><b>APPOINTMENT ID</b></td>
+            <td><b>PICKUP</b></td>
+            <td><b>DROP OFF</b></td>
+            <td><b>DATE</b></td>
+            <td><b>TIME</b></td>
+            <td><b>VEHICLE TYPE</b></td>
+            <td><b>CANCELLATION STATUS</b></td>
+            <td><b>CUSTOMER</b></td>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="appointment: ${driverAppointmentsList}">
+            <td><span th:text="${appointment.appointmentId}"></span></td>
+            <td><span th:text="${appointment.pickupLocation}"></span></td>
+            <td><span th:text="${appointment.dropOffLocation}"></span></td>
+            <td><span th:text="${appointment.appointmentDate}"></span></td>
+            <td><span th:text="${appointment.appointmentTime}"></span></td>
+            <td><span th:text="${appointment.vehicleType}"></span></td>
+            <td><span th:text="${appointment.cancellationStatus==false} ? 'NO' : 'YES'"></span></td>
+            <td>
+                <form method="post" th:action="@{/adminCustomerDetails/{id}(id=${appointment.customerId})}">
+                    <button type="submit" class="btn btn-primary">View</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

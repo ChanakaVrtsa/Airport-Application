@@ -1,0 +1,33 @@
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Travel Mate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .jumbotron {
+        background-color: #000365; /* Dark Blue */
+        color: #ffffff;
+        padding: 150px 25px 0px 25px;
+        }
+    </style>
+
+</head>
+<body>
+<header th:insert="header.html"></header>
+    <div class="jumbotron jumbotron-fluid">
+            <div class="row">
+                <div class="col-sm-4 text-center container-fluid" >
+                    <h1 style="font-size:72px">Travel Mate</h1>
+                    <p style="font-size:22px">No. 1 Partner To Get You On Time!...</p>
+                </div>
+                <div class="col-sm-8 container-fluid">
+                    <img th:src="@{/images/homepageImg2.png}" alt="Image" class="img-fluid mx-auto d-block"/>
+                </div>
+            </div>
+    </div>
+
+</body>
+</html>

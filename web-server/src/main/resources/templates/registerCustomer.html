@@ -1,0 +1,103 @@
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<style>
+ .topCardSet {
+ margin: 0px 10px 0px 10px;
+ }
+</style>
+<script>
+    var checkPassword = function() {
+  if (document.getElementById('cPassword1').value ==
+    document.getElementById('cPassword2').value) {
+    document.getElementById('passwordMessage').style.color = 'green';
+    document.getElementById('passwordMessage').innerHTML = 'Password Matching';
+    document.getElementById('newCusSubmitBtn').disabled = false;
+  } else {
+    document.getElementById('passwordMessage').style.color = 'red';
+    document.getElementById('passwordMessage').innerHTML = 'Password Not Matching';
+    document.getElementById('newCusSubmitBtn').disabled = true;
+  }
+}
+</script>
+</head>
+<body>
+<header th:insert="header.html"></header>
+
+<div class="container-fluid" style="margin-top:50px">
+    <div class="container card shadow p-3 mb-5 rounded">
+        <form style="margin-top: 20px" id="newCustomerForm" th:action="@{/createCustomer}" th:object="${newCustomer}" method="post" >
+            <p th:if="${duplicateCustomer == true}" style="color: #FF0000">Username Already Exists!</p>
+            <h3>Create Account</h3>
+            <hr>
+            <div class="form-row">
+                <div class="col-sm-4">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Username"  th:field="*{username}"  required>
+                </div>
+                <div class="col-sm-4">
+                    <label for="cPassword1">Password</label>
+                    <input type="password" class="form-control" id="cPassword1" placeholder="Password"  th:field="*{password}" onkeyup='checkPassword();' required>
+                </div>
+                <div class="col-sm-4">
+                    <label for="cPassword2">Re-Enter Password</label>
+                    <span id='passwordMessage'></span>
+                    <input type="password" class="form-control" id="cPassword2" placeholder="Re-Enter Password" onkeyup='checkPassword();' required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-4">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Email"  th:field="*{email}"  required>
+                </div>
+                <div class="col-sm-4">
+                    <label for="fname">First Name</label>
+                    <input type="text" class="form-control" id="fname" placeholder="First Name"  th:field="*{customerFirstName}"  required>
+                </div>
+                <div class="col-sm-4">
+                    <label for="lname">Last Name</label>
+                    <input type="text" class="form-control" id="lname" placeholder="Last Name" th:field="*{customerLastName}"  required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-4">
+                    <label for="street">Street</label>
+                    <input type="text" class="form-control" id="street" placeholder="Street"  th:field="*{customerAddressStreet}"  required>
+                </div>
+                <div class="col-sm-4">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" placeholder="City"  th:field="*{customerAddressCity}"  required>
+                </div>
+                <div class="col-sm-4">
+                    <label for="province">Province</label>
+                    <select class="form-control" id="province" th:field="*{customerAddressProvince}" required>
+                        <option value="Western">Western</option>
+                        <option value="Southern">Southern</option>
+                        <option value="Central">Central</option>
+                        <option value="Eastern">Eastern</option>
+                        <option value="Northern">Northern</option>
+                        <option value="North Western">North Western</option>
+                        <option value="North Central">North Central</option>
+                        <option value="Uva">Uva</option>
+                        <option value="Sabaragamuwa">Sabaragamuwa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-4">
+                    <label for="contact">Contact</label>
+                    <input type="text" class="form-control" id="contact" placeholder="Contact Number"  th:field="*{customerContactNo}"  required>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="newCusSubmitBtn" type="submit" style="margin-top: 10px">Create Account</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

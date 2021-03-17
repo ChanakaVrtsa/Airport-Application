@@ -1,0 +1,199 @@
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Admin Portal</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+ .topCardSet {
+ margin: 0px 10px 0px 10px;
+ }
+</style>
+</head>
+<body>
+
+<!--<h1>Hello [[${#request.remoteUser}]]</h1>-->
+<header th:insert="header.html"></header>
+
+<div class="container-fuild" style="margin-top:20px">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card topCardSet shadow p-3 mb-5 bg-white rounded">
+                <div class="row no-gutters">
+                    <div class="col-sm-3">
+                        <img th:src="@{/images/avatar.png}" class="card-img-top img-fluid" alt="...">
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="card-body">
+                            <h5 class="card-title">Hello! <span th:text="${adminName}"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5 ml-auto">
+            <div class="bs-example">
+
+                <ul class="nav nav-pills nav-justified" role="tablist">
+                    <li class="nav-item">
+                        <a class="card topCardSet shadow p-3 mb-5  rounded" href="/adminCustomers" style="text-decoration:none">Customers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="card topCardSet shadow p-3 mb-5  rounded" href="/adminDrivers" style="text-decoration:none">Drivers</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+        <div class="container-fluid">
+            <div class="container-fluid" th:unless="${customersList == null}">
+                <div class="container-fluid" style="padding-left:0; margin-bottom:30px">
+                    <form class="form-inline" th:action="@{/searchCustomer}" method="post">
+                        <input class="form-control" type="text" placeholder="Enter Username" th:name="customerUsername" style="border-radius: 0" required>
+                        <button class="btn btn-success" type="submit" style="border-radius: 0"><i class="fa fa-search"></i> Search</button>
+                    </form>
+                </div>
+                <th:block th:with="partitions=${T(org.apache.commons.collections4.ListUtils).partition(customersList, 4)}">
+                    <div class="row" th:each="partition: ${partitions}">
+                        <div class="col-sm-3" th:each="customer: ${partition}">
+                            <div class="card cardAppointment shadow-sm p-3 mb-5 bg-white rounded">
+                                <h5 class="card-header">Username: <span th:text="${customer.customerUsername}"></span></h5>
+                                <div class="card-body">
+                                    <h6 class="card-title">DETAILS</h6>
+                                    <p class="card-text">First Name: <span th:text="${customer.customerFirstName}"></span></p>
+                                    <p class="card-text">Last Name: <span th:text="${customer.customerLastName}"></span></p>
+                                    <p class="card-text">Street: <span th:text="${customer.customerAddressStreet}"></span></p>
+                                    <p class="card-text">City: <span th:text="${customer.customerAddressCity}"></span></p>
+                                    <p class="card-text">Province: <span th:text="${customer.customerAddressProvince}"></span></p>
+                                    <p class="card-text">Contact No: <span th:text="${customer.customerContactNo}"></span></p>
+                                </div>
+                                <div class="col-sm-12">
+                                    <form method="post" th:action="@{/adminCusAppointmentDetails/{id}(id=${customer.customerId})}">
+                                        <button type="submit" class="btn btn-primary btn-block">Appointments</button>
+                                    </form>
+                                </div>
+                                <div class="col-sm-12">
+                                    <form method="post" th:action="@{/adminCusPaymentDetails/{id}(id=${customer.customerId})}">
+                                        <button type="submit" class="btn btn-primary btn-block">Payments</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="container-fluid" th:unless="${driversList == null}">
+                <div class="container-fluid" style="padding-left:0; margin-bottom:30px">
+                    <form class="form-inline" th:action="@{/searchDriver}" method="post">
+                        <input class="form-control" type="text" placeholder="Enter Username" th:name="driverUsername" style="border-radius: 0" required>
+                        <button class="btn btn-success" type="submit" style="border-radius: 0"><i class="fa fa-search"></i> Search</button>
+                    </form>
+                </div>
+                <th:block th:with="partitions=${T(org.apache.commons.collections4.ListUtils).partition(driversList, 4)}">
+                    <div class="row" th:each="partition: ${partitions}">
+                        <div class="col-sm-3" th:each="driver: ${partition}">
+                            <div class="card cardAppointment shadow-sm p-3 mb-5 bg-white rounded">
+                                <h5 class="card-header">Username: <span th:text="${driver.driverUsername}"></span></h5>
+                                <div class="card-body">
+                                    <h6 class="card-title">DETAILS</h6>
+                                    <p class="card-text">First Name: <span th:text="${driver.driverFirstName}"></span></p>
+                                    <p class="card-text">Last Name: <span th:text="${driver.driverLastName}"></span></p>
+                                    <p class="card-text">NIC: <span th:text="${driver.driverNIC}"></span></p>
+                                    <p class="card-text">License No: <span th:text="${driver.driverLicenseNo}"></span></p>
+                                    <p class="card-text">Street: <span th:text="${driver.driverAddressStreet}"></span></p>
+                                    <p class="card-text">City: <span th:text="${driver.driverAddressCity}"></span></p>
+                                    <p class="card-text">Province: <span th:text="${driver.driverAddressProvince}"></span></p>
+                                    <p class="card-text">Contact No: <span th:text="${driver.driverContactNo}"></span></p>
+                                </div>
+                                <div class="col-sm-12">
+                                    <form method="post" th:action="@{/adminDriverAppointmentDetails/{id}(id=${driver.driverId})}">
+                                        <button type="submit" class="btn btn-primary btn-block">Appointments</button>
+                                    </form>
+                                </div>
+                                <div class="col-sm-12">
+                                    <form method="post" th:action="@{/adminDriverVehicleDetails/{id}(id=${driver.driverId})}">
+                                        <button type="submit" class="btn btn-primary btn-block">Vehicles</button>
+                                    </form>
+                                </div>
+                                <div class="col-sm-12">
+                                    <form method="post" th:action="@{/adminDriverPaymentDetails/{id}(id=${driver.driverId})}">
+                                        <button type="submit" class="btn btn-primary btn-block">Payments</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    <div class="container-fluid" th:unless="${customerByUsername == null}">
+        <div class="col-sm-3">
+            <div class="card cardAppointment shadow-sm p-3 mb-5 bg-white rounded">
+                <h5 class="card-header">Username: <span th:text="${customerByUsername.customerUsername}"></span></h5>
+                <div class="card-body">
+                    <h6 class="card-title">DETAILS</h6>
+                    <p class="card-text">First Name: <span th:text="${customerByUsername.customerFirstName}"></span></p>
+                    <p class="card-text">Last Name: <span th:text="${customerByUsername.customerLastName}"></span></p>
+                    <p class="card-text">Street: <span th:text="${customerByUsername.customerAddressStreet}"></span></p>
+                    <p class="card-text">City: <span th:text="${customerByUsername.customerAddressCity}"></span></p>
+                    <p class="card-text">Province: <span th:text="${customerByUsername.customerAddressProvince}"></span></p>
+                    <p class="card-text">Contact No: <span th:text="${customerByUsername.customerContactNo}"></span></p>
+                </div>
+                <div class="col-sm-12">
+                    <form method="post" th:action="@{/adminCusAppointmentDetails/{id}(id=${customerByUsername.customerId})}">
+                        <button type="submit" class="btn btn-primary btn-block">Appointments</button>
+                    </form>
+                </div>
+                <div class="col-sm-12">
+                    <form method="post" th:action="@{/adminCusPaymentDetails/{id}(id=${customerByUsername.customerId})}">
+                        <button type="submit" class="btn btn-primary btn-block">Payments</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" th:unless="${driverByUsername == null}">
+        <div class="col-sm-3">
+            <div class="card cardAppointment shadow-sm p-3 mb-5 bg-white rounded">
+                <h5 class="card-header">Username: <span th:text="${driverByUsername.driverUsername}"></span></h5>
+                <div class="card-body">
+                    <h6 class="card-title">DETAILS</h6>
+                    <p class="card-text">First Name: <span th:text="${driverByUsername.driverFirstName}"></span></p>
+                    <p class="card-text">Last Name: <span th:text="${driverByUsername.driverLastName}"></span></p>
+                    <p class="card-text">NIC: <span th:text="${driverByUsername.driverNIC}"></span></p>
+                    <p class="card-text">License No: <span th:text="${driverByUsername.driverLicenseNo}"></span></p>
+                    <p class="card-text">Street: <span th:text="${driverByUsername.driverAddressStreet}"></span></p>
+                    <p class="card-text">City: <span th:text="${driverByUsername.driverAddressCity}"></span></p>
+                    <p class="card-text">Province: <span th:text="${driverByUsername.driverAddressProvince}"></span></p>
+                    <p class="card-text">Contact No: <span th:text="${driverByUsername.driverContactNo}"></span></p>
+                </div>
+                <div class="col-sm-12">
+                    <form method="post" th:action="@{/adminDriverAppointmentDetails/{id}(id=${driverByUsername.driverId})}">
+                        <button type="submit" class="btn btn-primary btn-block">Appointments</button>
+                    </form>
+                </div>
+                <div class="col-sm-12">
+                    <form method="post" th:action="@{/adminDriverVehicleDetails/{id}(id=${driverByUsername.driverId})}">
+                        <button type="submit" class="btn btn-primary btn-block">Vehicles</button>
+                    </form>
+                </div>
+                <div class="col-sm-12">
+                    <form method="post" th:action="@{/adminDriverPaymentDetails/{id}(id=${driverByUsername.driverId})}">
+                        <button type="submit" class="btn btn-primary btn-block">Payments</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

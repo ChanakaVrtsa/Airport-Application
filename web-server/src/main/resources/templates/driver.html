@@ -1,0 +1,240 @@
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Driver Portal</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href='https://use.fontawesome.com/releases/v5.8.1/css/all.css'>
+
+<style>
+ .topCardSet {
+ margin: 0px 10px 0px 10px;
+ }
+</style>
+
+</head>
+<body>
+<header th:insert="header.html"></header>
+
+<div class="container-fuild" style="margin-top:20px">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card topCardSet shadow p-3 mb-5 bg-white rounded">
+                <div class="row no-gutters">
+                    <div class="col-sm-3">
+                        <img th:src="@{/images/avatar.png}" class="card-img-top img-fluid" alt="...">
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="card-body">
+                            <h5 class="card-title">Hello! <span th:text="${driver.driverFirstName}"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9 ml-auto">
+            <div class="bs-example">
+
+                <ul class="nav nav-pills nav-justified" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link  card topCardSet shadow p-3 mb-5  rounded" data-toggle="pill" href="#myAppointments">My Appointments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link card topCardSet shadow p-3 mb-5  rounded" data-toggle="pill" href="#vehicle">My Vehicles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link card topCardSet shadow p-3 mb-5  rounded" data-toggle="pill" href="#profile">Update Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="card topCardSet shadow p-3 mb-5  rounded" href="/driverFreeAppointments" style="text-decoration:none">Search New</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="card topCardSet shadow p-3 mb-5  rounded" href="/driverPayments" style="text-decoration:none">My Payments</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="tab-content">
+        <div class="tab-pane container-fluid fade" id="myAppointments">
+            <div class="container" style="margin-top:50px" th:unless="${appointmentsList != null}">
+                <p><i>No Appointments To Show. Please Accept An Appointment From Open Appointments</i></p>
+            </div>
+            <div class="container-fluid" th:unless="${appointmentsList == null}">
+                <div class="container" style="margin-top:50px" th:if="${appointmentsList.length == 0}">
+                    <p><i class="fas fa-info-circle"></i><i> Service Unavailable. Try Again Later</i></p>
+                </div>
+                <th:block th:with="partitions=${T(org.apache.commons.collections4.ListUtils).partition(appointmentsList, 4)}">
+                    <div class="row" th:each="partition: ${partitions}">
+                        <div class="col-sm-3" th:each="appointment: ${partition}">
+                            <div class="card cardAppointment shadow-sm p-3 mb-5 bg-white rounded">
+                                <h5 class="card-header">Date: <span th:text="${appointment.appointmentDate}"></span></h5>
+                                <div class="card-body">
+                                    <h6 class="card-title">DETAILS</h6>
+                                    <p class="card-text">PickUp: <span th:text="${appointment.pickupLocation}"></span></p>
+                                    <p class="card-text">DropOff: <span th:text="${appointment.dropOffLocation}"></span></p>
+                                    <p class="card-text">Time: <span th:text="${appointment.appointmentTime}"></span></p>
+                                    <p class="card-text">Vehicle: <span th:text="${appointment.vehicleType}"></span></p>
+                                    <p class="card-text">Status: <span th:if="${appointment.cancellationStatus==true}">Cancelled</span>
+                                        <span th:unless="${appointment.cancellationStatus==true}"> <span th:text="${appointment.driverId==0} ? 'Pending' : 'Accepted'"></span></span></p>
+                                    <p class="card-text">Payments: <span th:text="${appointment.hasPaid==false} ? 'Not Paid' : 'Paid'"></span></p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <form method="post" th:action="@{/customerDetails/{id}(id=${appointment.customerId})}">
+                                        <button type="submit" class="btn btn-primary">Customer Info</button>
+                                    </form>
+                                </div>
+                                <div class="col-sm-8">
+                                    <form method="post" th:action="@{/confirmPayment/{id}(id=${appointment.appointmentId})}">
+                                        <button type="submit" class="btn btn-danger" th:disabled="${appointment.hasPaid==true}">Confirm Pay</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+        <div class="tab-pane container-fluid fade" id="vehicle">
+            <div class="container card shadow p-3 mb-5 rounded">
+                <form style="margin-top: 20px" id="vehicleForm" th:action="@{/createVehicle}" th:object="${newVehicle}" method="post" >
+                    <h3>Add Vehicle</h3>
+                    <hr>
+                    <div class="form-row">
+                        <input type="hidden" th:field="*{vehicleId}" />
+                        <input type="hidden" th:field="*{driverId}" />
+                        <div class="col-sm-4">
+                            <label for="regNo">Registration Number</label>
+                            <input type="text" class="form-control" id="regNo" placeholder="Reg Number"  th:field="*{registrationNo}"  required>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="vehicle">Vehicle Type</label>
+                            <select class="form-control" id="vehicleType" th:field="*{vehicleType}" required>
+                                <option value="Car">Car</option>
+                                <option value="Van">Van</option>
+                                <option value="Bus">Bus</option>
+                                <option value="Threewheel">Threewheel</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="vehicleSubmitBtn" type="submit" style="margin-top: 10px">Add</button>
+                </form>
+            </div>
+            <div class="container-fluid" style="margin-top:20px">
+                <div class="container-fluid" th:unless="${vehicles == null}">
+                    <div class="container" style="margin-top:50px" th:if="${vehicles.length == 0}">
+                        <p><i class="fas fa-info-circle"></i><i> Service Unavailable. Try Again Later</i></p>
+                    </div>
+                    <th:block th:with="partitions=${T(org.apache.commons.collections4.ListUtils).partition(vehicles, 4)}">
+                        <div class="row" th:each="partition: ${partitions}">
+                            <div class="col-sm-3" th:each="vehicle: ${partition}">
+                                <div class="card shadow-sm p-3 mb-5 bg-white rounded">
+                                    <div class="col-sm-10 mx-auto">
+                                        <th:block th:switch="${vehicle.vehicleType}">
+                                            <div th:case="'Car'">
+                                                <img class="card-img-top" th:src="@{/images/Car.png}" alt="Card image">
+                                            </div>
+                                            <div th:case="'Van'">
+                                                <img class="card-img-top" th:src="@{/images/Van.jpg}" alt="Card image">
+                                            </div>
+                                            <div th:case="'Bus'">
+                                                <img class="card-img-top" th:src="@{/images/Bus.png}" alt="Card image">
+                                            </div>
+                                            <div th:case="'Threewheel'">
+                                                <img class="card-img-top" th:src="@{/images/Bus.png}" alt="Card image">
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                    <div class="card-body">
+                                        <hr/>
+                                        <h6 class="card-title">DETAILS</h6>
+                                        <p class="card-text"><b>Vehicle Id: </b><span th:text="${vehicle.vehicleId}"></span></p>
+                                        <p class="card-text"><b>Registration No: </b><span th:text="${vehicle.registrationNo}"></span></p>
+                                        <p class="card-text"><b>Type: </b><span th:text="${vehicle.vehicleType}"></span></p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <form method="post" th:action="@{/deleteVehicle/{id}(id=${vehicle.vehicleId})}">
+                                                <button type="submit" class="btn btn-danger">Delete Vehicle</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane container card shadow p-3 mb-5 rounded" id="profile">
+            <form style="margin-top: 20px" id="driverForm" th:action="@{/updateDriver}" th:object="${updatedDriver}" method="post" >
+                <h3>Update Profile</h3>
+                <hr>
+                <div class="form-row">
+                    <div class="col-sm-4">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Username"  th:value="${driver.driverUsername}" readonly>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" id="firstname" placeholder="First Name" th:value="${driver.driverFirstName}"  name="driverFirstName" required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" placeholder="Last Name" th:value="${driver.driverLastName}" name="driverLastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-4">
+                        <label for="street">Street</label>
+                        <input type="text" class="form-control" id="street" placeholder="Street" th:value="${driver.driverAddressStreet}" name="driverAddressStreet"  required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" placeholder="City"  th:value="${driver.driverAddressCity}" name="driverAddressCity"   required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="province">Province</label>
+                        <select class="form-control" id="province" th:value="${driver.driverAddressProvince}" name="driverAddressProvince"  required>
+                            <option value="Western">Western</option>
+                            <option value="Southern">Southern</option>
+                            <option value="Central">Central</option>
+                            <option value="Eastern">Eastern</option>
+                            <option value="Northern">Northern</option>
+                            <option value="North Western">North Western</option>
+                            <option value="North Central">North Central</option>
+                            <option value="Uva">Uva</option>
+                            <option value="Sabaragamuwa">Sabaragamuwa</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-4">
+                        <label for="contact">Contact Number</label>
+                        <input type="text" class="form-control" id="contact" placeholder="Contact No" th:value="${driver.driverContactNo}" name="driverContactNo" required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="nic">NIC Number</label>
+                        <input type="text" class="form-control" id="nic" placeholder="NIC Number" th:value="${driver.driverNIC}" name="driverNIC" required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="license">License Number</label>
+                        <input type="text" class="form-control" id="license" placeholder="Contact No" th:value="${driver.driverLicenseNo}" name="driverLicenseNo" required>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="driverSubmitBtn" type="submit" style="margin-top: 10px">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+server:
+  port: 8686
+  servlet:
+    session:
+      cookie:
+        name: AuthSession
+security:
+  oauth2:
+    client:
+      client-id: web
+      client-secret: pin
+      user-authorization-uri: http://localhost:8080/oauth/authorize
+      access-token-uri: http://localhost:8080/oauth/token
+    resource:
+      token-info-uri: http://localhost:8080/oauth/check_token
+
+
+

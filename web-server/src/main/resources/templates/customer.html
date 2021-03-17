@@ -1,0 +1,278 @@
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Customer Portal</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href='https://use.fontawesome.com/releases/v5.8.1/css/all.css'>
+
+<style>
+ .topCardSet {
+ margin: 0px 10px 0px 10px;
+ }
+
+</style>
+<script>
+    $('.datepicker').datepicker();
+}
+</script>
+</head>
+<body>
+
+<!--<h1>Hello [[${#request.remoteUser}]]</h1>-->
+<!--<h1>Hello <span th:text="${customer.customerFirstName}"></span></h1>-->
+<header th:insert="header.html"></header>
+
+<div class="container-fuild" style="margin-top:20px">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card topCardSet shadow p-3 mb-5 bg-white rounded">
+                <div class="row no-gutters">
+                    <div class="col-sm-3">
+                        <img th:src="@{/images/avatar.png}" class="card-img-top img-fluid" alt="...">
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="card-body">
+                            <h5 class="card-title">Hello! <span th:text="${customer.customerFirstName}"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8 ml-auto">
+            <div class="bs-example">
+
+                <ul class="nav nav-pills nav-justified" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link  card topCardSet shadow p-3 mb-5  rounded" data-toggle="pill" href="#all">All Appointments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link card topCardSet shadow p-3 mb-5  rounded" data-toggle="pill" href="#create">Create Appointment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link card topCardSet shadow p-3 mb-5  rounded" data-toggle="pill" href="#profile">Update Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="card topCardSet shadow p-3 mb-5  rounded" href="/customerPayments" style="text-decoration:none">My Payments</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="tab-content">
+        <div class="tab-pane container-fluid fade" id="all">
+            <div class="container" style="margin-top:50px" th:unless="${appointments != null}">
+                <p><i>No Appointments To Show. Please Create An Appointment</i></p>
+            </div>
+            <div class="container-fluid" th:unless="${appointments == null}">
+                <div class="container" style="margin-top:50px" th:if="${appointments.length == 0}">
+                    <p><i class="fas fa-info-circle"></i><i> Service Unavailable. Try Again Later</i></p>
+                </div>
+                <th:block th:with="partitions=${T(org.apache.commons.collections4.ListUtils).partition(appointments, 4)}">
+                    <div class="row" th:each="partition: ${partitions}">
+                        <div class="col-sm-3" th:each="appointment: ${partition}">
+                            <div class="card cardAppointment shadow-sm p-3 mb-5 bg-white rounded">
+                                <h5 class="card-header">Date: <span th:text="${appointment.appointmentDate}"></span></h5>
+                                <div class="card-body">
+                                    <h6 class="card-title">DETAILS</h6>
+                                    <p class="card-text">PickUp: <span th:text="${appointment.pickupLocation}"></span></p>
+                                    <p class="card-text">DropOff: <span th:text="${appointment.dropOffLocation}"></span></p>
+                                    <p class="card-text">Time: <span th:text="${appointment.appointmentTime}"></span></p>
+                                    <p class="card-text">Vehicle: <span th:text="${appointment.vehicleType}"></span></p>
+                                    <p class="card-text">Status: <span th:if="${appointment.cancellationStatus==true}">Cancelled</span>
+                                        <span th:unless="${appointment.cancellationStatus==true}"> <span th:text="${appointment.driverId==0} ? 'Pending' : 'Accepted'"></span></span></p>
+                                    <p class="card-text">Payments: <span th:text="${appointment.hasPaid==false} ? 'Not Paid' : 'Paid'"></span></p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <form method="post" th:action="@{/driverDetails/{id}(id=${appointment.driverId})}">
+                                            <button type="submit" class="btn btn-primary" th:disabled="${appointment.driverId==0}">Driver Details</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <form method="post" th:action="@{/cancelAppointment/{id}(id=${appointment.appointmentId})}">
+                                            <button type="submit" class="btn btn-danger" th:disabled="${appointment.cancellationStatus==true}">Cancel</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+        <div class="tab-pane container card fade shadow p-3 mb-5  rounded" id="create">
+            <form style="margin-top: 20px" id="appmntForm" th:action="@{/createAppointment}" th:object="${appointment}" method="post" >
+                <h3>Create Appointment</h3>
+                <hr>
+                <div class="form-row">
+                    <input type="hidden" th:field="*{appointmentId}" />
+                    <input type="hidden" th:field="*{customerId}" />
+                    <input type="hidden" th:field="*{driverId}" />
+                    <input type="hidden" th:field="*{cancellationStatus}" />
+                    <div class="col-sm-6">
+                        <label for="pickup">Pickup Location</label>
+                        <input type="text" class="form-control" id="pickup" placeholder="pickup" th:field="*{pickupLocation}" required>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="dropoff">Dropoff Location</label>
+                        <input type="text" class="form-control" id="dropoff" placeholder="dropoff" th:field="*{dropOffLocation}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-4">
+                        <label for="date">Date</label>
+<!--                        <input type="text" class="form-control" id="date" placeholder="DD-MM-YYYY"  pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" required>-->
+<!--                        <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" >-->
+                            <input type="date" id="date" class="form-control" th:value="*{appointmentDate}" th:field="*{appointmentDate}" required>
+<!--                            <div class="input-group-addon">-->
+<!--                                <span class="glyphicon glyphicon-th"></span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="time">Time</label>
+                        <input type="text" class="form-control" id="time" placeholder="Time in 24hour format" pattern="[0-2]{1}[0-9]{1}:[0-5]{1}[0-9]{1}" th:field="*{appointmentTime}"  required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="vehicle">Vehicle Type</label>
+                        <select class="form-control" id="vehicle" th:field="*{vehicleType}" required>
+                            <option value="Car">Car</option>
+                            <option value="Van">Van</option>
+                            <option value="Bus">Bus</option>
+                            <option value="Threewheel">Threewheel</option>
+                        </select>
+                    </div>
+                </div>
+                <h4 style="margin-top:10px">Payments</h4>
+                <hr>
+                <div>
+                    <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="optradio" th:field="*{hasPaid}" value="0"><i>Pay on drop off</i>
+                        </label>
+                    </div>
+                    <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="optradio" th:field="*{hasPaid}" value="1" data-toggle="modal" data-target="#paymentModal"><i>Pay now</i>
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="appmntSubmitBtn" type="submit" style="margin-top: 10px">Create Appointment</button>
+            </form>
+            <div>
+                <div class="modal fade" id="paymentModal">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Pay Using Credit/Debit Card</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form role="form">
+                                    <div class="form-group">
+                                        <label for="username"><h6>Card Owner</h6></label>
+                                        <input type="text" name="username" placeholder="Owner Name" required class="form-control ">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><h6>Card number</h6></label>
+                                        <div class="input-group"> <input type="text" name="cardNum" placeholder="Card Number" class="form-control " required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted">
+                                                    <i class="fab fa-cc-visa mx-1"></i>
+                                                    <i class="fab fa-cc-mastercard mx-1"></i>
+                                                    <i class="fab fa-cc-amex mx-1"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <div class="form-group">
+                                                <label><span class="hidden-xs"><h6>Expiration Date</h6></span></label>
+                                                <div class="input-group">
+                                                    <input type="number" placeholder="MM" name="" class="form-control" required>
+                                                    <input type="number" placeholder="YY" name="" class="form-control" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group mb-4">
+                                                <label data-toggle="tooltip" title="Three digit CV code"><h6>CVV <i class="fa fa-question-circle d-inline"></i></h6></label>
+                                                <input type="text" required class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-primary btn-block shadow-sm">Confirm Payment</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane container fade card fade shadow p-3 mb-5  rounded" id="profile">
+            <form style="margin-top: 20px" id="cusForm" th:action="@{/updateCustomer}" th:object="${updatedCustomer}" method="post" >
+                <h3>Update Profile</h3>
+                <hr>
+                <div class="form-row">
+                    <div class="col-sm-4">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Username"  th:value="${customer.customerUsername}" readonly>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" id="firstname" placeholder="First Name" th:value="${customer.customerFirstName}"  name="customerFirstName" required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" placeholder="Last Name" th:value="${customer.customerLastName}" name="customerLastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-4">
+                        <label for="street">Street</label>
+                        <input type="text" class="form-control" id="street" placeholder="Street" th:value="${customer.customerAddressStreet}" name="customerAddressStreet"  required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" placeholder="City"  th:value="${customer.customerAddressCity}" name="customerAddressCity"   required>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="province">Province</label>
+                        <select class="form-control" id="province" th:value="${customer.customerAddressProvince}" name="customerAddressProvince"  required>
+                            <option value="Western">Western</option>
+                            <option value="Southern">Southern</option>
+                            <option value="Central">Central</option>
+                            <option value="Eastern">Eastern</option>
+                            <option value="Northern">Northern</option>
+                            <option value="North Western">North Western</option>
+                            <option value="North Central">North Central</option>
+                            <option value="Uva">Uva</option>
+                            <option value="Sabaragamuwa">Sabaragamuwa</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-sm-4">
+                        <label for="contact">Contact Number</label>
+                        <input type="text" class="form-control" id="contact" placeholder="Contact No" th:value="${customer.customerContactNo}" name="customerContactNo" required>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="cusSubmitBtn" type="submit" style="margin-top: 10px">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
